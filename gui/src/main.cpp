@@ -71,7 +71,11 @@ int real_main(int argc, char *argv[])
 
 	QApplication app(argc, argv);
 
+#ifdef Q_OS_MACOS
+	QApplication::setWindowIcon(QIcon(":/icons/chiaki_macos.svg"));
+#else
 	QApplication::setWindowIcon(QIcon(":/icons/chiaki.svg"));
+#endif
 
 	QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
@@ -129,15 +133,21 @@ int real_main(int argc, char *argv[])
 		{
 			if(args.length() < 3)
 				parser.showHelp(1);
+
+			bool found = false;
 			for(const auto &temphost : settings.GetRegisteredHosts())
 			{
 				if(temphost.GetServerNickname() == args[1])
 				{
+					found = true;
 					morning = temphost.GetRPKey();
 					regist_key = temphost.GetRPRegistKey();
 					target = temphost.GetTarget();
 					break;
 				}
+			}
+			if(!found)
+			{
 				printf("No configuration found for '%s'\n", args[1].toLocal8Bit().constData());
 				return 1;
 			}

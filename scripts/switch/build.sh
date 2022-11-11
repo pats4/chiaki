@@ -5,10 +5,7 @@ set -xveo pipefail
 arg1=$1
 build="./build"
 if [ "$arg1" != "linux" ]; then
-	# source /opt/devkitpro/switchvars.sh
-	# toolchain="${DEVKITPRO}/switch.cmake"
 	toolchain="cmake/switch.cmake"
-	export PORTLIBS_PREFIX="$(${DEVKITPRO}/portlibs_prefix.sh switch)"
 	build="./build_switch"
 fi
 
@@ -18,6 +15,9 @@ BASEDIR=$(realpath "${SCRIPTDIR}/../../")
 build_chiaki (){
 	pushd "${BASEDIR}"
 		#rm -rf ./build
+
+		# purge leftover proto/nanopb_pb2.py which may have been created with another protobuf version
+		rm -fv third-party/nanopb/generator/proto/nanopb_pb2.py
 
 		cmake -B "${build}" \
 			-GNinja \

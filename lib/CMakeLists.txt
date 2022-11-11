@@ -72,7 +72,7 @@ set(SOURCE_FILES
 		src/controller.c
 		src/takionsendbuffer.c
 		src/time.c
-		src/fec
+		src/fec.c
 		src/regist.c
 		src/opusdecoder.c
 		src/orientation.c)
@@ -119,11 +119,15 @@ find_package(Threads REQUIRED)
 target_link_libraries(chiaki-lib Threads::Threads)
 
 if(CHIAKI_LIB_ENABLE_MBEDTLS)
-	# provided by mbedtls-static (mbedtls-devel)
-	find_library(MBEDTLS mbedtls)
-	find_library(MBEDX509 mbedx509)
-	find_library(MBEDCRYPTO mbedcrypto)
-	target_link_libraries(chiaki-lib ${MBEDTLS} ${MBEDX509} ${MBEDCRYPTO})
+	if(CHIAKI_LIB_MBEDTLS_EXTERNAL_PROJECT)
+		target_link_libraries(chiaki-lib mbedtls mbedx509 mbedcrypto)
+	else()
+		# provided by mbedtls-static (mbedtls-devel)
+		find_library(MBEDTLS mbedtls)
+		find_library(MBEDX509 mbedx509)
+		find_library(MBEDCRYPTO mbedcrypto)
+		target_link_libraries(chiaki-lib ${MBEDTLS} ${MBEDX509} ${MBEDCRYPTO})
+	endif()
 elseif(CHIAKI_LIB_OPENSSL_EXTERNAL_PROJECT)
 	target_link_libraries(chiaki-lib OpenSSL_Crypto)
 else()

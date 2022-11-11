@@ -3,13 +3,13 @@
 set -xe
 cd "`dirname $(readlink -f ${0})`"
 
-docker build -t chiaki-xenial . -f Dockerfile.xenial
+podman build -t chiaki-bionic . -f Dockerfile.bionic
 cd ..
-docker run --rm \
+podman run --rm \
 	-v "`pwd`:/build/chiaki" \
 	-w "/build/chiaki" \
 	--device /dev/fuse \
 	--cap-add SYS_ADMIN \
-	-t chiaki-xenial \
-	/bin/bash -c "scripts/build-appimage.sh"
+	-t chiaki-bionic \
+	/bin/bash -c "scripts/build-appimage.sh /build/appdir"
 
